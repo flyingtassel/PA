@@ -5,10 +5,14 @@
 
 这年头想找一个合适的梯子并不容易，尤其对于我这样只为了看个速度OK的油管汤不热之类的需求，买现成的服务商产品往往要被QoS限速，有经验的老司机都知道，SS这玩意跟网游SF也差不太多，只要主机数量固定，随着用户越来越多，姿势再多也没用，高峰期翻起来肯定不爽。更别提如今大多数还有流量限制了。
 在这样的情况下，使用一些现代魔法塑造梯子自用或者和小伙伴共享就成了有追求的老司机方案。你要做的就是准备好信用卡或者paypal，用脸或者肤色选一个和你使用的ISP相性较高的主机提供商，再怼几行前辈写好的咒文，就能召唤出一只不错的梯子，顺带还可以获得不少初、中级现代魔法经验值，何乐而不为呢。
-本文采用当前（2017年7月）口碑和体验都比较出众的老牌厂商[Vultr](http://www.vultr.com/?ref=7186807)作为基础施法材料。其他材料也类似，请自行摸索。
+
+* 注意：本文采用当前（2017年7月）口碑和体验都比较出众的老牌厂商[Vultr](http://www.vultr.com/?ref=7186807)作为基础施法材料。其他厂家出品的材料也类似，请自行摸索。
+
+* 本文需要一定的PC网络和软件基础知识，实现环境为windows。自己搞不定请千万不要找作者吐槽，找个阿宅男朋友什么的比较快。
+
 [TOC]
 
-## 1.基础工作
+## 1.开始搭梯子前的准备工作
 
 ### 理解SS的工作原理
 
@@ -21,7 +25,14 @@ graph LR
     B["梯子(装好shadowsocks的VPS)"]-->你的墙内设备;
 ```
 
-简单来说就是这样，所以你在召唤梯子的时候，首先要有一个身处墙外的VPS作为施法材料。所以一般来说这个时候就只有买买买了。
+简单来说就是这样，所以你在召唤梯子的时候，首先要有一个身处墙外的VPS（Virtual Private Server 虚拟专用服务器）作为施法材料。所以一般来说这个时候就只有找老外买买买了。
+
+### 软件准备
+
+* 现代化浏览器，推荐chrome系的各种国产非国产，建议还是找个有按钮能直接点开应用商店的，方便翻墙安装SwitchyOmega这样的扩展插件测试翻墙效果。
+* 一个能用SSH连接远程主机的客户端软件，方便操作VPS。如果你不知道这是什么东西又没有听说过Putty什么的，那么我建议你还是点击链接下一个本文中使用的[Xshell](https://www.portablesoft.org/xshell/)。
+* [Shadowsocks windows](https://github.com/shadowsocks/shadowsocks-windows/releases)，基于C#，目前最新版本4.04。翻墙用PC客户端。也有同学可能已经用上了SSR（~~并不是金闪闪的那种卡片~~），但本文并没有采用SSR的服务器端。
+* [安卓](https://github.com/shadowsocks/shadowsocks-android)或者[IOS](https://github.com/herzmut/shadowsocks-iOS)客户端，请自行研究。
 
 ### 购物准备
 
@@ -64,3 +75,48 @@ graph LR
 
 点击服务器名字进入详情页面，需要你记录的是IP、username和password。password点那个眼睛图标才会显示，其实不用看，只要点右边的copy图标就会进入剪贴板了。到此vultr网站上的操作基本完成。
 ![借用](http://img.bawagon.com/uploads/2015/06/3210.png)
+
+### 连接VPS
+
+打开Xshell，新建会话，名称就决定是**Saber**了！
+![2017718153213](http://obkip5m5x.bkt.clouddn.com/2017718153213.png)
+
+然后是用户身份验证，填上用户名密码。
+
+![201771815367](http://obkip5m5x.bkt.clouddn.com/201771815367.png)
+
+连接成功的话，就会出现你可以开始操作的#号。
+
+![2017718153829](http://obkip5m5x.bkt.clouddn.com/2017718153829.png)
+
+接下来的部分虽然是用了一键部署这种无脑操作，不过可能对新手还是有些难度了，请时不时的参考秋水逸冰大大的[这篇文章](https://teddysun.com/342.html)。
+
+### 安装SS服务端
+
+复制以下代码，然后在Xshell中按`Shift+Ins`后回车。
+
+```centos
+
+wget --no-check-certificate -O shadowsocks.sh https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocks.sh
+chmod +x shadowsocks.sh
+./shadowsocks.sh 2>&1 | tee shadowsocks.log
+
+```
+
+接下来屏幕会翻滚一些你根本看不懂的玩意，然后会让你依次输入PC客户端用到的自定义端口号和密码，我想能看到这里的人大概都知道port和password两个英文单词啥意思。新手需要注意的是，输密码请一气呵成，不然就要准备学linux基础操作了，详见后文。
+成功后大概如下图：
+
+![2017718155333](http://obkip5m5x.bkt.clouddn.com/2017718155333.png)
+
+这时候，你就可以点开SS windows客户端实验了。有关客户端的使用方法本文不在赘述，总之我们现在搞出来的是单用户系统，有IP、端口号和密码，加密方法默认是`aes-256-cfb`，你现在应该可以尝试着上梯子了。
+
+啊？你问接下来服务器还要干啥？当然是不眠不休的为你工作了，只要你vultr账户里还有美刀，它就会每个小时扣一次钱。所以能用就用吧，不要和美刀过不去。
+
+### VPS加速
+
+vultr东京机房速度还是不错的，基本上不采取特殊姿势直接翻起来youtube也能有几百K/s的下载速度，720p随便拖动无压力，但是1080p就容易缓冲了。所以还需要给服务器装个更加能搞事的东西来加快连接速度。
+
+* 阅读接下来的部分前，请随时参考[这篇文章](https://www.91yun.org/archives/683)以及[这篇文章](https://xubiji.com/5505.html)
+
+最终成功的话，应该是这样的
+![2017718161940](http://obkip5m5x.bkt.clouddn.com/2017718161940.png)
