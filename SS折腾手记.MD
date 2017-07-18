@@ -110,13 +110,51 @@ chmod +x shadowsocks.sh
 
 这时候，你就可以点开SS windows客户端实验了。有关客户端的使用方法本文不在赘述，总之我们现在搞出来的是单用户系统，有IP、端口号和密码，加密方法默认是`aes-256-cfb`，你现在应该可以尝试着上梯子了。
 
+---
+
+**要求不高的用户请看到这里为止**
+
+---
+
 啊？你问接下来服务器还要干啥？当然是不眠不休的为你工作了，只要你vultr账户里还有美刀，它就会每个小时扣一次钱。所以能用就用吧，不要和美刀过不去。
 
 ### VPS加速
 
-vultr东京机房速度还是不错的，基本上不采取特殊姿势直接翻起来youtube也能有几百K/s的下载速度，720p随便拖动无压力，但是1080p就容易缓冲了。所以还需要给服务器装个更加能搞事的东西来加快连接速度。
+vultr东京机房速度还是不错的，基本上不采取特殊姿势直接翻起来youtube也能有几百K/s的下载速度，720p随便拖动无压力，但是1080p就容易缓冲了。所以还需要给服务器装个更加能搞事的东西来加快连接速度。实现的方法也很有几种，本文选取了同样有一键部署命令的锐速，个人（ISP：帝都联通）使用后效果拔群，youtube视频流速度提升一倍有余。
 
-* 阅读接下来的部分前，请随时参考[这篇文章](https://www.91yun.org/archives/683)以及[这篇文章](https://xubiji.com/5505.html)
+* 阅读接下来的部分时，请随时参考[这篇文章](https://www.91yun.org/archives/683) 以及[这篇文章](https://www.91yun.co/archives/795)
 
-最终成功的话，应该是这样的
+尤其是后面一篇，因为当你选择vultr服务器时，无论是CentOS6.x还是7.x，内核都已经比我们接下来要用的脚本新了，需要想办法换成能脚本能接受的版本才行。具体操作文内很详细，不赘述了。
+
+CentOS版本都记不得了的，请看下图自寻，忘记圈出来了。
+![2017718203248](http://obkip5m5x.bkt.clouddn.com/2017718203248.png)
+
+如果你按照说明一路换完内核也`reboot`了，应该就会断开和VPS的连接，站起来上个厕所或者倒杯咖啡，用`Xshell`重新连接上之后运行`uname -r`，对比版本符合文中要求了，就可以直接复制以下代码，然后在Xshell中按`Shift+Ins`后回车运行即可，`Xshell`关了的就回头看看当初是用什么手段进入Saber酱的身体的吧。
+
+```Linux
+wget -N --no-check-certificate https://raw.githubusercontent.com/91yun/serverspeeder/master/serverspeeder-all.sh && bash serverspeeder-all.sh
+```
+
+这个脚本里用的是破解版锐速，没有什么需要设置的部分，耐心等待即可。由于两者版本实际上不是完全对应的，最后一般会给你2-3个贴近的可运行版本选择，输入对应数字即可。
+
+最终成功的话，应该是这样的：
 ![2017718161940](http://obkip5m5x.bkt.clouddn.com/2017718161940.png)
+
+是不是觉得少了些什么？对！你之前把VPS重启了，我们用的脚本又没有设定它开机自启动，SS服务端自然也就休息了，参考下面的部分，再来条命令把它怼回来。
+
+#### 常用SS服务端命令
+
+启动：`/etc/init.d/shadowsocks start`
+停止：`/etc/init.d/shadowsocks stop`
+重启：`/etc/init.d/shadowsocks restart`
+状态：`/etc/init.d/shadowsocks status`
+
+#### 常用锐速服务端命令
+
+启动锐速：`/serverspeeder/bin/serverSpeeder.sh start`
+停止锐速：`/serverspeeder/bin/serverSpeeder.sh stop`
+卸载：`./serverSpeederInstaller.sh uninstall`
+状态：`service serverSpeeder status`
+更新锐速授权：`/serverspeeder/bin/serverSpeeder.sh renewLic`
+最后一条一般用不上，因为装好之后一般都有效期十几年。
+
